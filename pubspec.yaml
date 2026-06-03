@@ -2,13 +2,13 @@ name: flutter_smartgen
 description: >-
   CLI that scaffolds Flutter feature-module pages with GetX: barrel, binding,
   controller, repository, model, and view. Configure paths via smartgen.yaml.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/kishanMoontechnolabs/flutter_smartgen
 issue_tracker: https://github.com/kishanMoontechnolabs/flutter_smartgen/issues
 homepage: https://github.com/kishanMoontechnolabs/flutter_smartgen
 
 environment:
-  sdk: ^3.10.0
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   args: ^2.7.0
