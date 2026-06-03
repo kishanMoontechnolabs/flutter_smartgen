@@ -1,0 +1,11 @@
+# Not published to pub.dev
+graphify-out/
+.idea/
+*.iml
+.metadata
+flutter_smartgen.iml
+smartgen.yaml
+example/smartgen.yaml
+example/lib/screens/
+example/.dart_tool/
+example/pubspec.lock
