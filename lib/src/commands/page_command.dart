@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:flutter_smartgen/src/commands/route_command.dart';
 import 'package:flutter_smartgen/src/config/smartgen_config.dart';
 import 'package:flutter_smartgen/src/generators/page_generator.dart';
+import 'package:flutter_smartgen/src/generators/route_generator.dart';
+import 'package:flutter_smartgen/src/utils/cli_errors.dart';
 import 'package:flutter_smartgen/src/utils/file_ops.dart';
 import 'package:flutter_smartgen/src/utils/project_root.dart';
 
@@ -18,6 +21,10 @@ class PageCommand extends Command<int> {
   String get invocation => 'smartgen page <page_name>';
 
   PageCommand() {
+    argParser.addFlag(
+      'route',
+      help: 'Also register AppRoutes constant and GetPage in router files.',
+    );
     argParser.addOption(
       'cwd',
       help: 'Flutter project root (default: search upward from current directory).',
@@ -26,6 +33,10 @@ class PageCommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    return runCommand(_run);
+  }
+
+  Future<int> _run() async {
     final String? pageName = argResults?.rest.isNotEmpty == true
         ? argResults!.rest.first
         : null;
@@ -44,17 +55,7 @@ class PageCommand extends Command<int> {
     final ProjectRoot root = ProjectRoot.find(
       startPath: argResults!.option('cwd'),
     );
-
-    late final SmartgenConfig config;
-    try {
-      config = SmartgenConfig.load(root.directory);
-    } on StateError catch (e) {
-      stderr.writeln(e.message);
-      return 1;
-    } on FormatException catch (e) {
-      stderr.writeln(e.message);
-      return 1;
-    }
+    final SmartgenConfig config = loadConfigFrom(root.directory);
 
     final PageGenerationResult result = PageGenerator(
       projectRoot: root.directory,
@@ -70,9 +71,24 @@ class PageCommand extends Command<int> {
     stdout.writeln(
       'Done: ${result.createdCount} created, ${result.skippedCount} skipped.',
     );
-    stdout.writeln(
-      'Reminder: register a route and GetPage binding for this screen in your router.',
-    );
+
+    if (argResults!.flag('route') == true) {
+      stdout.writeln('');
+      stdout.writeln('Routes:');
+      final RouteGenerationResult? routeResult = RouteGenerator.tryRegister(
+        projectRoot: root.directory,
+        config: config,
+        pageName: pageName,
+      );
+      if (routeResult == null) {
+        return cliErrorExitCode;
+      }
+      RouteCommand.printResult(routeResult);
+    } else {
+      stdout.writeln(
+        'Reminder: register a route and GetPage binding for this screen in your router, or run with --route.',
+      );
+    }
 
     return 0;
   }

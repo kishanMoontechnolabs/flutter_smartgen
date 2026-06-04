@@ -1,3 +1,10 @@
+## 0.3.0
+
+### New: route registration
+
+- `smartgen route <page>` — merge-only registration of `AppRoutes` constant and `GetPage` for an existing page module.
+- `smartgen page <name> --route` — generate the page module, then register the route in one step.
+
 ## 0.2.0
 
 ### New: `smartgen assets images`

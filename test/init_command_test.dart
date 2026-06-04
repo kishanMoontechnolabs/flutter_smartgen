@@ -18,7 +18,11 @@ void main() {
       expect(yaml, contains('directories:'));
       expect(yaml, contains('- assets/images'));
       expect(yaml, contains('# - assets/icons'));
-      expect(yaml.indexOf('naming:'), lessThan(yaml.indexOf('assets:')));
+      expect(yaml.indexOf('naming:'), lessThan(yaml.indexOf('routes:')));
+      expect(yaml.indexOf('routes:'), lessThan(yaml.indexOf('assets:')));
+      expect(yaml, contains('routes:'));
+      expect(yaml, contains('routes_file: lib/router/app_routes.dart'));
+      expect(yaml, isNot(contains('# routes:')));
     });
 
     test('creates smartgen.yaml in project root', () async {

@@ -34,6 +34,23 @@ class AssetsImagesConfig {
   bool get isConfigured => directories.isNotEmpty;
 }
 
+/// GetX route registration settings from smartgen.yaml.
+class RoutesConfig {
+  const RoutesConfig({
+    this.routesFile = 'lib/router/app_routes.dart',
+    this.pagesFile = 'lib/router/app_pages.dart',
+    this.routesClass = 'AppRoutes',
+    this.pagesClass = 'AppPages',
+    this.routeNameSuffix = 'Page',
+  });
+
+  final String routesFile;
+  final String pagesFile;
+  final String routesClass;
+  final String pagesClass;
+  final String routeNameSuffix;
+}
+
 /// Naming conventions from smartgen.yaml.
 class NamingConfig {
   const NamingConfig({
@@ -52,6 +69,7 @@ class SmartgenConfig {
     required this.screensBase,
     required this.naming,
     this.commonScaffold,
+    this.routes,
     this.assetsImages,
     required this.configDirectory,
   });
@@ -60,6 +78,7 @@ class SmartgenConfig {
   final String screensBase;
   final NamingConfig naming;
   final CommonScaffoldConfig? commonScaffold;
+  final RoutesConfig? routes;
   final AssetsImagesConfig? assetsImages;
   final String configDirectory;
 
@@ -112,6 +131,21 @@ class SmartgenConfig {
       );
     }
 
+    RoutesConfig? routes;
+    final dynamic routesNode = doc['routes'];
+    if (routesNode is YamlMap) {
+      routes = RoutesConfig(
+        routesFile:
+            _string(routesNode, 'routes_file') ?? 'lib/router/app_routes.dart',
+        pagesFile:
+            _string(routesNode, 'pages_file') ?? 'lib/router/app_pages.dart',
+        routesClass: _string(routesNode, 'routes_class') ?? 'AppRoutes',
+        pagesClass: _string(routesNode, 'pages_class') ?? 'AppPages',
+        routeNameSuffix:
+            _string(routesNode, 'route_name_suffix') ?? 'Page',
+      );
+    }
+
     AssetsImagesConfig? assetsImages;
     final dynamic assetsNode = doc['assets'];
     if (assetsNode is YamlMap) {
@@ -132,6 +166,7 @@ class SmartgenConfig {
       screensBase: screensBase,
       naming: naming,
       commonScaffold: commonScaffold,
+      routes: routes,
       assetsImages: assetsImages,
       configDirectory: directory.path,
     );

@@ -52,4 +52,47 @@ class FileOps {
         '$prefix$needsNewline$contentToAppend\n${existing.substring(lastBrace)}';
     file.writeAsStringSync(updated);
   }
+
+  /// Inserts [contentToAppend] before the closing `];` of a list literal.
+  static void appendBeforeListClosing({
+    required File file,
+    required String contentToAppend,
+  }) {
+    final String existing = file.readAsStringSync();
+    final int closing = existing.lastIndexOf('];');
+    if (closing == -1) {
+      throw FormatException('Could not find list closing ]; in ${file.path}.');
+    }
+
+    final String prefix = existing.substring(0, closing);
+    final String needsNewline = prefix.endsWith('\n') ? '' : '\n';
+    final String updated =
+        '$prefix$needsNewline$contentToAppend${existing.substring(closing)}';
+    file.writeAsStringSync(updated);
+  }
+
+  /// Prepends [importLine] after the last existing import, or at file start.
+  static void addImportIfMissing({
+    required File file,
+    required String importLine,
+  }) {
+    final String existing = file.readAsStringSync();
+    final String trimmedImport = importLine.trim();
+    if (existing.contains(trimmedImport)) {
+      return;
+    }
+
+    final RegExp importPattern = RegExp(r"^import\s+'[^']+';", multiLine: true);
+    final Match? lastImport = importPattern.allMatches(existing).lastOrNull;
+
+    if (lastImport == null) {
+      file.writeAsStringSync('$trimmedImport\n$existing');
+      return;
+    }
+
+    final int insertAt = lastImport.end;
+    final String updated =
+        '${existing.substring(0, insertAt)}\n$trimmedImport${existing.substring(insertAt)}';
+    file.writeAsStringSync(updated);
+  }
 }

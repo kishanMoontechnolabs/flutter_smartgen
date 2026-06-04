@@ -46,6 +46,27 @@ naming:
       );
     });
 
+    test('loads routes configuration', () {
+      File(p.join(tempDir.path, SmartgenConfig.fileName)).writeAsStringSync('''
+package_name: my_app
+screens_base: lib/screens
+routes:
+  routes_file: lib/router/custom_routes.dart
+  pages_file: lib/router/custom_pages.dart
+  routes_class: CustomRoutes
+  pages_class: CustomPages
+  route_name_suffix: Route
+''');
+
+      final SmartgenConfig config = SmartgenConfig.load(tempDir);
+
+      expect(config.routes?.routesFile, 'lib/router/custom_routes.dart');
+      expect(config.routes?.pagesFile, 'lib/router/custom_pages.dart');
+      expect(config.routes?.routesClass, 'CustomRoutes');
+      expect(config.routes?.pagesClass, 'CustomPages');
+      expect(config.routes?.routeNameSuffix, 'Route');
+    });
+
     test('loads assets.images configuration', () {
       File(p.join(tempDir.path, SmartgenConfig.fileName)).writeAsStringSync('''
 package_name: my_app

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:flutter_smartgen/src/config/smartgen_config.dart';
 import 'package:flutter_smartgen/src/generators/app_images_generator.dart';
+import 'package:flutter_smartgen/src/utils/cli_errors.dart';
 import 'package:flutter_smartgen/src/utils/project_root.dart';
 
 /// Generates or updates AppImages from configured asset directories.
@@ -26,20 +27,14 @@ class AssetsImagesCommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    return runCommand(_run);
+  }
+
+  Future<int> _run() async {
     final ProjectRoot root = ProjectRoot.find(
       startPath: argResults!.option('cwd'),
     );
-
-    late final SmartgenConfig config;
-    try {
-      config = SmartgenConfig.load(root.directory);
-    } on StateError catch (e) {
-      stderr.writeln(e.message);
-      return 1;
-    } on FormatException catch (e) {
-      stderr.writeln(e.message);
-      return 1;
-    }
+    final SmartgenConfig config = loadConfigFrom(root.directory);
 
     final AssetsImagesConfig? assetsImages = config.assetsImages;
     if (assetsImages == null || !assetsImages.isConfigured) {
@@ -47,7 +42,7 @@ class AssetsImagesCommand extends Command<int> {
         'assets.images is not configured in smartgen.yaml. '
         'Add the assets.images block, then retry.',
       );
-      return 1;
+      return cliErrorExitCode;
     }
 
     final AppImagesGenerationResult result = AppImagesGenerator(

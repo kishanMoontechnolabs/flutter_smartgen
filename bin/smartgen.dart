@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter_smartgen/src/runner.dart';
 
-void main(List<String> arguments) {
-  SmartGenRunner().run(arguments);
+Future<void> main(List<String> arguments) async {
+  exit(await SmartGenRunner().run(arguments));
 }

@@ -43,7 +43,7 @@ class PageGenerator {
       config.screensBase,
       naming.moduleSnake,
     );
-    final String moduleImportPath = _packageImportPath(modulePath);
+    final String moduleImportPath = packageImportPath(modulePath);
 
     final PageTemplates templates = PageTemplates(
       config: config,
@@ -97,7 +97,7 @@ class PageGenerator {
   }
 
   /// Dart package imports omit the leading `lib/` segment.
-  static String _packageImportPath(String modulePath) {
+  static String packageImportPath(String modulePath) {
     final String normalized = modulePath.replaceAll(r'\', '/');
     if (normalized.startsWith('lib/')) {
       return normalized.substring(4);

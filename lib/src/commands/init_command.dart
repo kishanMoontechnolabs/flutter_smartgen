@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:flutter_smartgen/src/config/smartgen_config.dart';
+import 'package:flutter_smartgen/src/utils/cli_errors.dart';
 import 'package:flutter_smartgen/src/utils/project_root.dart';
 import 'package:path/path.dart' as p;
 
@@ -13,9 +14,22 @@ class InitCommand extends Command<int> {
   @override
   String get description => 'Create smartgen.yaml in the current Flutter project.';
 
+  InitCommand() {
+    argParser.addOption(
+      'cwd',
+      help: 'Flutter project root (default: search upward from current directory).',
+    );
+  }
+
   @override
   Future<int> run() async {
-    final ProjectRoot root = ProjectRoot.find();
+    return runCommand(_run);
+  }
+
+  Future<int> _run() async {
+    final ProjectRoot root = ProjectRoot.find(
+      startPath: argResults?.option('cwd'),
+    );
     final File configFile = File(
       p.join(root.directory.path, SmartgenConfig.fileName),
     );
@@ -46,14 +60,21 @@ class InitCommand extends Command<int> {
 package_name: $packageName
 screens_base: lib/screens
 
+naming:
+  screen_suffix: Screen
+  controller_suffix: Controller
+
+routes:
+  routes_file: lib/router/app_routes.dart
+  pages_file: lib/router/app_pages.dart
+  routes_class: AppRoutes
+  pages_class: AppPages
+  route_name_suffix: Page
+
 # Optional: uncomment and set paths to use CommonScaffold instead of Scaffold
 # common_scaffold:
 #   import: package:$packageName/widgets/common_scaffold.dart
 #   class_name: CommonScaffold
-
-naming:
-  screen_suffix: Screen
-  controller_suffix: Controller
 
 assets:
   images:
