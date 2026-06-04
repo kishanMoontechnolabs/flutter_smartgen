@@ -54,6 +54,14 @@ screens_base: lib/screens
 naming:
   screen_suffix: Screen
   controller_suffix: Controller
+
+assets:
+  images:
+    output: lib/app/app_images.dart
+    class_name: AppImages
+    directories:
+      - assets/images
+      # - assets/icons
 ''';
   }
 }

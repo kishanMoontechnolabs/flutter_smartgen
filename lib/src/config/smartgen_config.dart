@@ -16,6 +16,24 @@ class CommonScaffoldConfig {
   bool get isConfigured => import.isNotEmpty && className.isNotEmpty;
 }
 
+/// Image asset generation settings from smartgen.yaml.
+class AssetsImagesConfig {
+  AssetsImagesConfig({
+    this.output = 'lib/app/app_images.dart',
+    this.className = 'AppImages',
+    this.directories = const <String>[
+      'assets/images',
+      'assets/icons',
+    ],
+  });
+
+  final String output;
+  final String className;
+  final List<String> directories;
+
+  bool get isConfigured => directories.isNotEmpty;
+}
+
 /// Naming conventions from smartgen.yaml.
 class NamingConfig {
   const NamingConfig({
@@ -34,6 +52,7 @@ class SmartgenConfig {
     required this.screensBase,
     required this.naming,
     this.commonScaffold,
+    this.assetsImages,
     required this.configDirectory,
   });
 
@@ -41,6 +60,7 @@ class SmartgenConfig {
   final String screensBase;
   final NamingConfig naming;
   final CommonScaffoldConfig? commonScaffold;
+  final AssetsImagesConfig? assetsImages;
   final String configDirectory;
 
   static const String fileName = 'smartgen.yaml';
@@ -92,6 +112,15 @@ class SmartgenConfig {
       );
     }
 
+    AssetsImagesConfig? assetsImages;
+    final dynamic assetsNode = doc['assets'];
+    if (assetsNode is YamlMap) {
+      final dynamic imagesNode = assetsNode['images'];
+      if (imagesNode is YamlMap) {
+        assetsImages = _parseAssetsImages(imagesNode);
+      }
+    }
+
     if (doc.containsKey('exports')) {
       stderr.writeln(
         'Warning: smartgen.yaml contains deprecated "exports" key; it is ignored.',
@@ -103,8 +132,35 @@ class SmartgenConfig {
       screensBase: screensBase,
       naming: naming,
       commonScaffold: commonScaffold,
+      assetsImages: assetsImages,
       configDirectory: directory.path,
     );
+  }
+
+  static AssetsImagesConfig _parseAssetsImages(YamlMap imagesNode) {
+    final List<String> directories = _stringList(imagesNode, 'directories');
+
+    if (imagesNode.containsKey('extensions')) {
+      stderr.writeln(
+        'Warning: smartgen.yaml assets.images.extensions is deprecated and ignored; all files are included.',
+      );
+    }
+
+    return AssetsImagesConfig(
+      output: _string(imagesNode, 'output') ?? 'lib/app/app_images.dart',
+      className: _string(imagesNode, 'class_name') ?? 'AppImages',
+      directories: directories.isEmpty
+          ? const <String>['assets/images', 'assets/icons']
+          : directories,
+    );
+  }
+
+  static List<String> _stringList(YamlMap map, String key) {
+    final dynamic value = map[key];
+    if (value is! YamlList) {
+      return <String>[];
+    }
+    return value.map((dynamic item) => item.toString()).toList();
   }
 
   static String? _string(YamlMap map, String key) {

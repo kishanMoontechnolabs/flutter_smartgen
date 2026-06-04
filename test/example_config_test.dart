@@ -49,6 +49,7 @@ void main() {
 
         final SmartgenConfig config = SmartgenConfig.load(temp);
         expect(config.packageName, 'flutter_smartgen_example');
+        expect(config.assetsImages?.directories, ['assets/images']);
       } finally {
         temp.deleteSync(recursive: true);
       }

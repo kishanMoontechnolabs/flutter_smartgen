@@ -14,6 +14,11 @@ void main() {
       expect(yaml, isNot(contains('c3_mobile_app')));
       expect(yaml, contains('screens_base: lib/screens'));
       expect(yaml, isNot(contains('default_area')));
+      expect(yaml, contains('assets:'));
+      expect(yaml, contains('directories:'));
+      expect(yaml, contains('- assets/images'));
+      expect(yaml, contains('# - assets/icons'));
+      expect(yaml.indexOf('naming:'), lessThan(yaml.indexOf('assets:')));
     });
 
     test('creates smartgen.yaml in project root', () async {

@@ -3,9 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/flutter_smartgen.svg)](https://pub.dev/packages/flutter_smartgen)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A Dart CLI that scaffolds **Flutter feature-module pages** with a consistent **GetX** architecture — barrel file, binding, controller, repository, model, and view — so your team can add new screens in seconds with the same folder layout every time.
-
-Run `smartgen init` once, then `smartgen page <name>` from any Flutter project root. Global activation is optional if you add the package as a dev dependency.
+A Dart CLI that scaffolds **Flutter feature-module pages** with a consistent **GetX** architecture and syncs **AppImages** from your asset folders. Run `smartgen init` once, then `smartgen page <name>` or `smartgen assets images` from any Flutter project root. Global activation is optional if you add the package as a dev dependency.
 
 ---
 
@@ -13,9 +11,10 @@ Run `smartgen init` once, then `smartgen page <name>` from any Flutter project r
 
 - **Project setup** — `smartgen init` creates `smartgen.yaml` from your `pubspec.yaml` package name
 - **Page scaffolding** — `smartgen page <name>` generates six Dart files per screen module
+- **AppImages** — `smartgen assets images` syncs `lib/app/app_images.dart` from asset folders (add, skip existing, remove deleted files)
 - **GetX-ready** — `GetView`, `GetxController`, `Bindings`, and `Get.lazyPut` out of the box
 - **Flexible scaffold** — use your shared `CommonScaffold` or default Flutter `Scaffold`
-- **Safe re-runs** — existing files are never overwritten
+- **Safe re-runs** — existing page files are never overwritten
 - **Clean views** — generated screens use `_mainBody()` with a `SizedBox()` placeholder
 
 ---
@@ -55,6 +54,7 @@ Run from any Flutter project:
 ```bash
 smartgen init
 smartgen page profile
+smartgen assets images
 ```
 
 ---
@@ -65,7 +65,7 @@ Add to your Flutter app `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  flutter_smartgen: ^0.1.0
+  flutter_smartgen: ^0.2.0
 ```
 
 Install and run via `dart run`:
@@ -74,6 +74,7 @@ Install and run via `dart run`:
 dart pub get
 dart run flutter_smartgen:smartgen init
 dart run flutter_smartgen:smartgen page profile
+dart run flutter_smartgen:smartgen assets images
 ```
 
 No PATH setup required. Recommended for teams so everyone uses the same version from `pubspec.lock`.
@@ -89,6 +90,7 @@ From your **Flutter app root** (where `pubspec.yaml` and `lib/` exist):
 ```bash
 smartgen init
 smartgen page profile
+smartgen assets images
 ```
 
 **Project dev dependency**
@@ -96,6 +98,7 @@ smartgen page profile
 ```bash
 dart run flutter_smartgen:smartgen init
 dart run flutter_smartgen:smartgen page profile
+dart run flutter_smartgen:smartgen assets images
 ```
 
 This creates:
@@ -131,6 +134,14 @@ common_scaffold:
 naming:
   screen_suffix: Screen
   controller_suffix: Controller
+
+assets:
+  images:
+    output: lib/app/app_images.dart
+    class_name: AppImages
+    directories:
+      - assets/images
+      # - assets/icons
 ```
 
 | Key | Required | Description |
@@ -139,8 +150,49 @@ naming:
 | `screens_base` | Yes | Base path for screen modules (e.g. `lib/screens`) |
 | `common_scaffold` | No | `import` and `class_name` for a shared scaffold widget |
 | `naming` | No | Class name suffixes for screen and controller |
+| `assets.images` | No | Asset folders for `smartgen assets images` (see below) |
 
 Each page is generated at `lib/screens/{name}_screen/` under `screens_base`.
+
+---
+
+## Asset images
+
+Generate `AppImages` with one command. Config is at the bottom of `smartgen.yaml` after `smartgen init`.
+
+```bash
+smartgen assets images
+```
+
+**Setup**
+
+1. Add image files under `assets/images` (and uncomment more paths under `directories` if needed).
+2. List those folders in `pubspec.yaml` under `flutter: assets:`.
+3. Run the command above.
+
+**Example output**
+
+```dart
+class AppImages {
+  AppImages._();
+
+  /// Images
+  static const String icBack = 'assets/images/ic_back.svg';
+
+  /// Icons
+  static const String searchIcon = 'assets/icons/search_icon.svg';
+}
+```
+
+**What it does**
+
+| Run | Result |
+|-----|--------|
+| First time | Creates `AppImages` with every file in your folders |
+| Again | Adds new files only; skips existing; removes entries when a file was deleted |
+| Folders | Add as many paths as you need under `directories` |
+
+Paths are full strings (e.g. `'assets/icons/search_icon.svg'`). Section titles come from the folder name (`assets/icons` → `/// Icons`).
 
 ---
 
@@ -195,7 +247,8 @@ Get
 | Command (global) | Command (dev dependency) | Description |
 |------------------|--------------------------|-------------|
 | `smartgen init` | `dart run flutter_smartgen:smartgen init` | Create `smartgen.yaml` (skipped if file exists) |
-| `smartgen page <name>` | `dart run flutter_smartgen:smartgen page <name>` | Generate a screen module (requires `smartgen.yaml`) |
+| `smartgen page <name>` | `dart run flutter_smartgen:smartgen page <name>` | Generate a screen module |
+| `smartgen assets images` | `dart run flutter_smartgen:smartgen assets images` | Sync `AppImages` from asset folders |
 
 ---
 
@@ -218,9 +271,13 @@ For bugs, feature requests, or questions, [open an issue](https://github.com/kis
 
 ## Author
 
-| ![Kishan](https://github.com/kishanMoontechnolabs.png?size=80) |
-|:--:|
-| [**Kishan**](https://github.com/kishanMoontechnolabs) |
+<p align="center">
+  <img src="https://github.com/kishanMoontechnolabs.png?size=48" width="48" height="48" alt="Kishan" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/kishanMoontechnolabs"><strong>Kishan</strong></a>
+</p>
 
 ---
 

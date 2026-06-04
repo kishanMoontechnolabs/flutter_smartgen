@@ -45,5 +45,29 @@ naming:
         throwsA(isA<StateError>()),
       );
     });
+
+    test('loads assets.images configuration', () {
+      File(p.join(tempDir.path, SmartgenConfig.fileName)).writeAsStringSync('''
+package_name: my_app
+screens_base: lib/screens
+assets:
+  images:
+    output: lib/app/app_images.dart
+    class_name: AppImages
+    directories:
+      - assets/images
+      - assets/icons
+      - assets/onboarding
+''');
+
+      final SmartgenConfig config = SmartgenConfig.load(tempDir);
+
+      expect(config.assetsImages?.className, 'AppImages');
+      expect(config.assetsImages?.directories, [
+        'assets/images',
+        'assets/icons',
+        'assets/onboarding',
+      ]);
+    });
   });
 }
