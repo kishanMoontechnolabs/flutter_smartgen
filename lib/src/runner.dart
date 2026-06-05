@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:flutter_smartgen/src/commands/assets_command.dart';
+import 'package:flutter_smartgen/src/commands/env_command.dart';
 import 'package:flutter_smartgen/src/commands/init_command.dart';
 import 'package:flutter_smartgen/src/commands/page_command.dart';
 import 'package:flutter_smartgen/src/commands/route_command.dart';
@@ -15,6 +16,7 @@ class SmartGenRunner extends CommandRunner<int> {
           'Scaffold Flutter feature-module pages from smartgen.yaml.',
         ) {
     addCommand(InitCommand());
+    addCommand(EnvCommand());
     addCommand(PageCommand());
     addCommand(RouteCommand());
     addCommand(AssetsCommand());

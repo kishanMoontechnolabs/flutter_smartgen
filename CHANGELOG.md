@@ -1,3 +1,11 @@
+## 0.4.0
+
+### New: `smartgen env`
+
+- Create `.env.development` and `.env.production` at the Flutter project root.
+- Each file includes `BASE_URL` and `API_KEY` placeholders (empty values).
+- Skip-if-exists: never overwrites an existing env file.
+
 ## 0.3.0
 
 ### New: route registration
