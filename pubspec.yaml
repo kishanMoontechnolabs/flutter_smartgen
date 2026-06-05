@@ -1,8 +1,8 @@
 name: flutter_smartgen
 description: >-
   CLI that scaffolds Flutter feature-module pages with GetX, registers routes,
-  syncs AppImages, and creates environment files. Configure paths via smartgen.yaml.
-version: 0.4.0
+  syncs AppImages, creates environment files, and scaffolds lib/app. Configure via smartgen.yaml.
+version: 0.5.0
 repository: https://github.com/kishanMoontechnolabs/flutter_smartgen
 issue_tracker: https://github.com/kishanMoontechnolabs/flutter_smartgen/issues
 homepage: https://github.com/kishanMoontechnolabs/flutter_smartgen

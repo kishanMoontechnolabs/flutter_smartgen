@@ -1,3 +1,12 @@
+## 0.5.0
+
+### New: `smartgen app`
+
+- Scaffold `lib/app/` files aligned with common GetX app structure (11 files).
+- `smartgen app` — create all missing files; `smartgen app <name>` — one file (e.g. `fonts`, `class`).
+- Skip-if-exists: never overwrites existing files.
+- `AppClass` includes singleton + `RxBool isLoading = false.obs`; other classes are empty shells.
+
 ## 0.4.0
 
 ### New: `smartgen env`

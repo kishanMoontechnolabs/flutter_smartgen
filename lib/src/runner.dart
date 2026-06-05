@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:flutter_smartgen/src/commands/app_command.dart';
 import 'package:flutter_smartgen/src/commands/assets_command.dart';
 import 'package:flutter_smartgen/src/commands/env_command.dart';
 import 'package:flutter_smartgen/src/commands/init_command.dart';
@@ -17,6 +18,7 @@ class SmartGenRunner extends CommandRunner<int> {
         ) {
     addCommand(InitCommand());
     addCommand(EnvCommand());
+    addCommand(AppCommand());
     addCommand(PageCommand());
     addCommand(RouteCommand());
     addCommand(AssetsCommand());

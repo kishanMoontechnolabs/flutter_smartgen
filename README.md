@@ -144,6 +144,32 @@ API_KEY=
 
 Add both files to `.gitignore`. Load with [`flutter_dotenv`](https://pub.dev/packages/flutter_dotenv) if needed.
 
+### App folder (`smartgen app`)
+
+Creates `lib/app/` scaffold files (skip if exist). All files or one by name:
+
+```bash
+smartgen app
+smartgen app fonts
+smartgen app class
+```
+
+**`app_class.dart`** — singleton with default loading state:
+
+```dart
+class AppClass {
+  factory AppClass() => _singleton;
+  AppClass._internal();
+  static final AppClass _singleton = AppClass._internal();
+
+  RxBool isLoading = false.obs;
+}
+```
+
+Other files (`AppColors`, `AppConstants`, `AppStrings`, …) are empty class shells. Run `smartgen assets images` to fill `AppImages`.
+
+Valid names: `barrel`, `colors`, `constants`, `strings`, `images`, `fonts`, `lists`, `enum`, `dialogue`, `class`, `translation`.
+
 ---
 
 ## Install
@@ -152,15 +178,16 @@ Add both files to `.gitignore`. Load with [`flutter_dotenv`](https://pub.dev/pac
 
 ```bash
 dart pub global activate flutter_smartgen
+export PATH="$PATH:$HOME/.pub-cache/bin"   # add to ~/.zshrc or ~/.bash_profile
 ```
 
-You might need to [set up your path](https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path).
+Windows or issues? [Set up your path](https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path).
 
 **Dev dependency (recommended for teams)**
 
 ```yaml
 dev_dependencies:
-  flutter_smartgen: ^0.4.0
+  flutter_smartgen: ^0.5.0
 ```
 
 ```bash
@@ -168,7 +195,13 @@ dart pub get
 dart run flutter_smartgen:smartgen init
 ```
 
-Use `dart run flutter_smartgen:smartgen …` instead of `smartgen …` when installed as a dev dependency.
+> **Important:** With a dev dependency, always use `dart run flutter_smartgen:smartgen …` — not `smartgen …`.
+>
+> Example:
+>
+> ```bash
+> dart run flutter_smartgen:smartgen page profile --route
+> ```
 
 ---
 
@@ -178,12 +211,13 @@ Use `dart run flutter_smartgen:smartgen …` instead of `smartgen …` when inst
 |---------|-------------|
 | `smartgen init` | Create `smartgen.yaml` |
 | `smartgen env` | Create `.env.development` and `.env.production` (skip if exist) |
+| `smartgen app [name]` | Create `lib/app/` scaffold files (all or one: `fonts`, `colors`, …) |
 | `smartgen page <name>` | Generate a screen module (6 files) |
 | `smartgen page <name> --route` | Generate module + register route |
 | `smartgen route <name>` | Register route only (module must exist) |
 | `smartgen assets images` | Sync `AppImages` from asset folders |
 
-Existing page and env files are never overwritten. Re-runs skip what already exists.
+Existing page, env, and app files are never overwritten. Re-runs skip what already exists.
 
 ---
 
